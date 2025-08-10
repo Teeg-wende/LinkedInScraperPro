@@ -1,8 +1,3 @@
-# Scrapping LinkedIn ------------------------------------------------------
-# Email : twinoussa55@gmail.com
-# Tel : +33 7 73 25 55 32
-# Rennes Student in MAS
-# -------------------------------------------------------------------------
 
 # Chargement des librairies nécessaires pour les requêtes HTTP, parsing HTML, manipulation de données et suivi de progression
 library(httr)      # Pour effectuer des requêtes HTTP
