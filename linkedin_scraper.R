@@ -49,6 +49,7 @@ build_url <- function(base_url, ..., multi_keys = NULL) {
 # location : localisation géographique (ex: "France")
 # geoId : identifiant géographique LinkedIn
 # f_TPR : filtre temps (ex: "r604800" pour la dernière semaine)
+
 url_linkedin <- function(
     mot_cle, location = "France", geoId = "105015875", f_TPR = "r604800") {
   base <- api
@@ -65,6 +66,7 @@ url_linkedin <- function(
 
 # Fonction pour générer l'URL principale d'une page de recherche LinkedIn
 # Permet la navigation par page avec paramètres de pagination
+
 url_page_principale_linkedin <- function(
     keywords = "", 
     location = "France", 
@@ -86,6 +88,7 @@ url_page_principale_linkedin <- function(
 # Fonction pour lire le contenu HTML d'une page LinkedIn en simulant un navigateur
 # url : URL à lire
 # Retourne un objet HTML parsé avec rvest
+
 lire_page_linkedin <- function(url) {
   tx <- "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/115"
   ua <- user_agent(tx)          # Définition du user-agent pour éviter les blocages
@@ -96,6 +99,7 @@ lire_page_linkedin <- function(url) {
 # Fonction pour extraire le nombre total d'offres disponibles sur la page principale LinkedIn
 # page : objet HTML parsé
 # Retourne un entier correspondant au nombre d'offres
+
 nombre_offres_page_linkedin <- function(page){
   element_html <- page |>
     html_element(".results-context-header__job-count") |>  # Sélecteur CSS spécifique LinkedIn
@@ -109,6 +113,7 @@ nombre_offres_page_linkedin <- function(page){
 # url : URL de base
 # numero_page : numéro de page (décalage start)
 # Retourne la page HTML parsée
+
 generer_url_linkedin_via_numero_page <- function(url, numero_page){
   url <- paste0(url, "&start=", numero_page)
   page <- lire_page_linkedin(url)
@@ -118,6 +123,7 @@ generer_url_linkedin_via_numero_page <- function(url, numero_page){
 # Extraction des informations sommaires des offres présentes sur une page LinkedIn
 # page : page HTML parsée
 # Retourne un data.frame avec colonnes : titre, entreprise, lieu, date, logo, lien vers l'offre
+
 collect_infos_offres_linkedin <- function(page){
   titres <- page |> 
     html_elements(".base-search-card__title") |> html_text2()
@@ -143,6 +149,7 @@ collect_infos_offres_linkedin <- function(page){
 # Extraction des détails d'une offre depuis sa page individuelle
 # page : page HTML parsée de l'offre
 # Retourne un data.frame avec description, niveau hiérarchique, type d'emploi, fonction et secteur
+
 collect_details_offres_linkedin <- function(page){
   description <- page %>% 
     html_elements(".show-more-less-html__markup") %>% html_text2()
@@ -168,6 +175,7 @@ collect_details_offres_linkedin <- function(page){
 # end_page : page finale
 # pause_base : durée minimum de pause entre chunks (en secondes)
 # Retourne un data.frame complet des résultats
+
 auto_chunk_scraper <- function(url, start_page, end_page, pause_base = 60) {
   
   total_pages <- end_page - start_page + 1
@@ -272,7 +280,3 @@ parse_linkedin_data <- function(keys, loc, geoId, f_TPR, max_pages = NULL) {
   data <- auto_chunk_scraper(url, start_page = 0, end_page = nb_pages)
   return(data)
 }
-
-# Exemple d'utilisation : scraping limité à 20 pages pour toutes les offres en France
-resultats <- parse_linkedin_data("", "France", "105015875", "r604800", 20)
-View(resultats)
